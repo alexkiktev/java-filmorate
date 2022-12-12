@@ -13,16 +13,16 @@ public class FilmController {
     private FilmService filmService = new FilmService();
 
     //добавление фильма
-    @PostMapping(value = "/film")
+    @PostMapping(value = "/films")
     public Film createFilm(@RequestBody @Valid Film film) {
         filmService.createFilm(film);
         return film;
     }
 
     //обновление фильма
-    @PutMapping(value = "/film/{id}")
-    public Film updateFilm(@RequestBody @Valid Film film, @PathVariable Long id) {
-        filmService.updateFilm(film, id);
+    @PutMapping(value = "/films")
+    public Film updateFilm(@RequestBody @Valid Film film) {
+        filmService.updateFilm(film, film.getId());
         return film;
     }
 

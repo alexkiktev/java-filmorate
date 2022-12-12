@@ -13,16 +13,16 @@ public class UserController {
     private UserService userService = new UserService();
 
     //создание пользователя
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/users")
     public User createUser(@RequestBody @Valid User user) {
         userService.createUser(user);
         return user;
     }
 
     //обновление пользователя
-    @PutMapping(value = "/user/{id}")
-    public User updateUser(@RequestBody @Valid User user, @PathVariable Long id) {
-        userService.updateUser(user, id);
+    @PutMapping(value = "/users")
+    public User updateUser(@RequestBody @Valid User user) {
+        userService.updateUser(user, user.getId());
         return user;
     }
 
