@@ -16,7 +16,10 @@ public class UserService {
     public User createUser(User user) {
 
         //если имя пустое, то использовать логин
-        if (user.getName().isBlank()) {
+
+        String name = user.getName();
+
+        if (name == null || name.isBlank()) {
             user.setName(user.getLogin());
         }
 
