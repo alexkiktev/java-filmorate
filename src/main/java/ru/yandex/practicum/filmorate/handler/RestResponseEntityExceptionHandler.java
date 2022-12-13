@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.handler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +22,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@Slf4j
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String TIMESTAMP = "timestamp";
     private static final String STATUS = "status";
@@ -37,7 +35,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
-        logger.error("Not Valid. Message: {}", ex.getMessage(), ex);
+        log.error("Not Valid. Message: {}", ex.getMessage(), ex);
         Map<String, Object> body = getGeneralErrorBody(status, request);
         List<String> errors = ex.getBindingResult()
                 .getAllErrors()
@@ -49,7 +47,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = ValidException.class)
     protected ResponseEntity<Object> handleBadDate(ValidException ex, WebRequest request) {
-        logger.error("The release date can't be earlier 1895-12-28");
+        log.error("The release date can't be earlier 1895-12-28");
         Map<String, Object> body = getGeneralErrorBody(HttpStatus.BAD_REQUEST, request);
         body.put(REASONS, ex.getMessage());
         return handleExceptionInternal(ex, body, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);

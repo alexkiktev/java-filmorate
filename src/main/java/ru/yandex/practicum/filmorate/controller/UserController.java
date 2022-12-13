@@ -8,26 +8,24 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/users")
 public class UserController {
 
     private UserService userService = new UserService();
 
-    //создание пользователя
-    @PostMapping(value = "/users")
+    @PostMapping
     public User createUser(@RequestBody @Valid User user) {
         userService.createUser(user);
         return user;
     }
 
-    //обновление пользователя
-    @PutMapping(value = "/users")
+    @PutMapping
     public User updateUser(@RequestBody @Valid User user) {
         userService.updateUser(user, user.getId());
         return user;
     }
 
-    //получение списка всех пользователей
-    @GetMapping(value = "/users")
+    @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }

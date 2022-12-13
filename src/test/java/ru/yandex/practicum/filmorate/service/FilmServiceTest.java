@@ -12,7 +12,7 @@ import static ru.yandex.practicum.filmorate.service.utils.ValidatorTestUtils.dto
 
 class FilmServiceTest {
 
-    FilmService filmService = new FilmService();
+    private FilmService filmService = new FilmService();
 
     private static Film getFilm(String name, String description, LocalDate releaseDate, Integer duration) {
         Film film = new Film();

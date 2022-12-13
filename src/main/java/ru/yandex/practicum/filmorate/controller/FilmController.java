@@ -8,26 +8,24 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/films")
 public class FilmController {
 
     private FilmService filmService = new FilmService();
 
-    //добавление фильма
-    @PostMapping(value = "/films")
+    @PostMapping
     public Film createFilm(@RequestBody @Valid Film film) {
         filmService.createFilm(film);
         return film;
     }
 
-    //обновление фильма
-    @PutMapping(value = "/films")
+    @PutMapping
     public Film updateFilm(@RequestBody @Valid Film film) {
         filmService.updateFilm(film, film.getId());
         return film;
     }
 
-    //получение всех фильмов
-    @GetMapping(value = "/films")
+    @GetMapping
     public List<Film> getAllFilms() {
         return filmService.getAllFilms();
     }

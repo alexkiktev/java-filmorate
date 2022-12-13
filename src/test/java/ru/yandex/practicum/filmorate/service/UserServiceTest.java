@@ -10,7 +10,7 @@ import static ru.yandex.practicum.filmorate.service.utils.ValidatorTestUtils.dto
 
 class UserServiceTest {
 
-    UserService userService = new UserService();
+    private UserService userService = new UserService();
 
     private static User getUser(String email, String login, String name, LocalDate birthday) {
         User user = new User();
