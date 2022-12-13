@@ -16,7 +16,7 @@ public class FilmService {
     private List<Film> films = new ArrayList<>();
     private Long id = 0L;
 
-    private static final LocalDate MIN_DATE_RELEASE = LocalDate.of(1985, 12, 28);
+    private static final LocalDate MIN_DATE_RELEASE = LocalDate.of(1895, 12, 28);
 
     public Film createFilm (@Valid @NotNull Film film) {
         if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
