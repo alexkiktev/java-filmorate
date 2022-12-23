@@ -17,7 +17,7 @@ import java.util.List;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final HashMap<Long, Film> films = new HashMap<>();
-    private Long id= 0L;
+    private Long id = 0L;
     private static final LocalDate MIN_DATE_RELEASE = LocalDate.of(1895, 12, 28);
 
     @Override

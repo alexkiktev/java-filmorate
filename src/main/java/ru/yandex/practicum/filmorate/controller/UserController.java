@@ -25,30 +25,16 @@ public class UserController {
         return userService.updateUser(user, user.getId());
     }
 
-    /**
-     * Добавление в друзья
-     * @param id - id пользователя, которому нужно добавить друга
-     * @param friendId - id друга
-     */
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userService.addFriend(id, friendId);
     }
 
-    /**
-     * Удаление из друзей
-     * @param id - id пользователя, у которого нужно удалить друга
-     * @param friendId - id друга
-     */
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userService.deleteFriend(id, friendId);
     }
 
-    /**
-     * Вернуть пользователя по id
-     * @param id - id пользователя
-     */
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
@@ -64,11 +50,6 @@ public class UserController {
         return userService.getFriends(id);
     }
 
-    /**
-     * Вернуть список друзей, общих с другим пользователем
-     * @param id - id первого пользователя
-     * @param otherId - id второго пользователя
-     */
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         return userService.getCommonFriends(id, otherId);

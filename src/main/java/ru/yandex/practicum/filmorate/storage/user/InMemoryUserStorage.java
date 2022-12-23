@@ -32,7 +32,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User updateUser(User user, Long id) {
         if (users.containsKey(user.getId())) {
-            if (user.getName().isBlank()) {
+            if (StringUtils.isBlank(user.getName())) {
                 user.setName(user.getLogin());
             }
             users.put(id, user);
