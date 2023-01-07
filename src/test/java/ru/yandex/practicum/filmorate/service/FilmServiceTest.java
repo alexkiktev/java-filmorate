@@ -1,25 +1,37 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exceptions.ValidException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.yandex.practicum.filmorate.service.utils.ValidatorTestUtils.dtoHasErrorMessage;
 
+@RequiredArgsConstructor
 class FilmServiceTest {
 
-    private FilmService filmService = new FilmService();
+    private final FilmStorage filmStorage = new InMemoryFilmStorage();
+    private final UserStorage userStorage = new InMemoryUserStorage();
+    private final FilmService filmService = new FilmService(filmStorage, userStorage);
 
-    private static Film getFilm(String name, String description, LocalDate releaseDate, Integer duration) {
+    private static Film getFilm(String name, String description, LocalDate releaseDate, Integer duration,
+                                Set<Long> userLikes) {
         Film film = new Film();
         film.setName(name);
         film.setDescription(description);
         film.setReleaseDate(releaseDate);
         film.setDuration(duration);
+        film.setUserLikes(userLikes);
         return film;
     }
 
@@ -28,7 +40,8 @@ class FilmServiceTest {
         Film film = getFilm("Матрица",
                 "Описание фильма",
                 LocalDate.parse("2020-08-20"),
-                90);
+                90,
+                new HashSet<>());
         Assertions.assertEquals(filmService.createFilm(film), film, "films don't match");
     }
 
@@ -37,7 +50,8 @@ class FilmServiceTest {
         Film film = getFilm(" ",
                 "Фильм про Новый год",
                 LocalDate.parse("2000-05-10"),
-                90);
+                90,
+                new HashSet<>());
         Assertions.assertTrue(dtoHasErrorMessage(film, "name should not be blank"));
     }
 
@@ -48,7 +62,8 @@ class FilmServiceTest {
                         "очень очень очень очень очень очень очень очень очень очень очень очень очень очень " +
                         "очень очень очень длинное описание - 217 символов",
                 LocalDate.parse("2000-05-10"),
-                90);
+                90,
+                new HashSet<>());
         Assertions.assertTrue(dtoHasErrorMessage(film,
                 "the description should be no more than 200 characters"));
     }
@@ -58,7 +73,8 @@ class FilmServiceTest {
         Film film = getFilm("Как я основал город на болоте",
                 "Описание фильма",
                 LocalDate.parse("1703-05-27"),
-                90);
+                90,
+                new HashSet<>());
         ValidException ex = assertThrows(
                 ValidException.class,
                 () -> filmService.createFilm(film)
@@ -71,7 +87,8 @@ class FilmServiceTest {
         Film film = getFilm("Матрица: Перезагрузка",
                 "Описание фильма",
                 LocalDate.parse("2000-05-10"),
-                -10);
+                -10,
+                new HashSet<>());
         Assertions.assertTrue(dtoHasErrorMessage(film, "the duration should be positive"));
     }
 
@@ -80,7 +97,8 @@ class FilmServiceTest {
         Film film = getFilm("Матрица",
                 "Описание фильма",
                 LocalDate.parse("2020-08-20"),
-                90);
+                90,
+                new HashSet<>());
         filmService.createFilm(film);
 
         String testDescription = "Новое описание фильма";
