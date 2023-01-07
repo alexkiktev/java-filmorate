@@ -7,7 +7,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -27,6 +29,21 @@ public class Film {
     @Positive(message = "the duration should be positive")
     private Integer duration;
 
+    private Integer rate = 0;
+
+    @NotNull
+    private Mpa mpa = new Mpa();
+
+    private List<Genre> genres = new ArrayList<>();
+
     private Set<Long> userLikes = new HashSet<>();
+
+    public void setMpaId(Integer id) {
+        mpa.setId(id);
+    }
+
+    public void setMpaName(String name) {
+        mpa.setName(name);
+    }
 
 }

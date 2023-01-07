@@ -2,28 +2,34 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.ValidException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.HashMap;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FilmService {
 
     private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+
+    private static final LocalDate MIN_DATE_RELEASE = LocalDate.of(1895, 12, 28);
 
     public Film createFilm (Film film) {
+        if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
+            throw new ValidException("The release date can't be earlier 1895-12-28");
+        }
         return filmStorage.createFilm(film);
     }
 
     public Film updateFilm(Film film, Long id) {
-        return filmStorage.updateFilm(film, id);
+        if (film.getReleaseDate().isBefore(MIN_DATE_RELEASE)) {
+            throw new ValidException("The release date can't be earlier 1895-12-28");
+        }
+        Integer rate = film.getRate();
+        return filmStorage.updateFilm(film, id, rate);
     }
 
     public List<Film> getAllFilms() {
@@ -35,24 +41,17 @@ public class FilmService {
     }
 
     public void addLike(Long id, Long userId) {
-        Film film = getFilm(id);
-        User user = userStorage.getUser(userId);
-        film.getUserLikes().add(user.getId());
+        filmStorage.addLike(id, userId);
+
     }
 
     public void deleteLike(Long id, Long userId) {
-        Film film = getFilm(id);
-        User user = userStorage.getUser(userId);
-        film.getUserLikes().remove(user.getId());
+        filmStorage.deleteLike(id, userId);
     }
 
     public List<Film> getPopularFilms(Long count) {
-        HashMap<Long, Film> films = filmStorage.getAllFilmsHashMap();
-        return films.values()
-                .stream()
-                .sorted((f0, f1) -> f1.getUserLikes().size() - f0.getUserLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
+        List<Film> films = filmStorage.getPopularFilms(count);
+        return films;
     }
 
 }
