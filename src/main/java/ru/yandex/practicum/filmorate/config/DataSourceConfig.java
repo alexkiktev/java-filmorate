@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("ru.yandex.practicum.filmorate")
-public class DatasourceConfig {
+public class DataSourceConfig {
 
     @Value("${spring.datasource.url}")
     private String JDBC_URL;

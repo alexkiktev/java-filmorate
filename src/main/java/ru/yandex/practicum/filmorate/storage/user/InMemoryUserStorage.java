@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
 
-    private final HashMap<Long, User> users = new HashMap<>();
+    private final HashMap<Long, User> users;
     private Long id= 0L;
+
+    public InMemoryUserStorage() {
+        users = new HashMap<>();
+    }
 
     @Override
     public User createUser(User user) {

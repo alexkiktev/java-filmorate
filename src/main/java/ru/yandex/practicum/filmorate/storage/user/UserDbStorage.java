@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
@@ -17,15 +18,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 @Primary
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
-
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public User createUser(User user) {
@@ -87,6 +85,7 @@ public class UserDbStorage implements UserStorage {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Error request");
         }
+        log.info("User " + getUser(id).getName() + " made friends with " + getUser(friendId).getName());
     }
 
     @Override
@@ -97,6 +96,7 @@ public class UserDbStorage implements UserStorage {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Error request");
         }
+        log.info("User " + getUser(id).getName() + " ended the friendship with " + getUser(friendId).getName());
     }
 
     @Override

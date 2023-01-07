@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
@@ -19,17 +20,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 @Primary
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final UserStorage userStorage;
-
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, UserStorage userStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.userStorage = userStorage;
-    }
 
     @Override
     public Film createFilm(Film film) {
@@ -127,6 +124,7 @@ public class FilmDbStorage implements FilmStorage {
             jdbcTemplate.update(sqlQuery, id, userId);
             sqlQuery = "UPDATE films SET rate = rate + 1 WHERE film_id = ?";
             jdbcTemplate.update(sqlQuery, id);
+            log.info("User " + userStorage.getUser(userId).getName() + " liked the movie " + getFilm(id).getName());
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Error request");
         }
@@ -139,6 +137,8 @@ public class FilmDbStorage implements FilmStorage {
             jdbcTemplate.update(sqlQuery, id, userId);
             sqlQuery = "UPDATE films SET rate = rate - 1 WHERE film_id = ?";
             jdbcTemplate.update(sqlQuery, id);
+            log.info("User " + userStorage.getUser(userId).getName() + " deleted the like of the movie " +
+                    getFilm(id).getName());
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Error request");
         }
