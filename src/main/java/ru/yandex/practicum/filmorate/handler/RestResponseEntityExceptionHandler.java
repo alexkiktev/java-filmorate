@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.yandex.practicum.filmorate.exceptions.ValidException;
+import ru.yandex.practicum.filmorate.exception.ValidException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
