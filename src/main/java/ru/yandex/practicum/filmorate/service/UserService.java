@@ -1,21 +1,25 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserStorage userStorage;
 
     public User createUser(User user) {
+        if (StringUtils.isBlank(user.getName())) {
+            user.setName(user.getLogin());
+        }
         return userStorage.createUser(user);
     }
 
@@ -32,36 +36,18 @@ public class UserService {
     }
 
     public void addFriend(Long id, Long friendId) {
-        User user = getUser(id);
-        User friend = getUser(friendId);
-        //обоюдное добавление в друзья
-        user.getFriends().add(friendId);
-        friend.getFriends().add(id);
+        userStorage.addFriend(id, friendId);
     }
 
     public void deleteFriend(Long id, Long friendId) {
-        User user = getUser(id);
-        User friend = getUser(friendId);
-        //обоюдное удаление из друзей
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(id);
+        userStorage.deleteFriend(id, friendId);
     }
 
     public List<User> getFriends(Long id) {
-        return getUser(id).getFriends()
-                .stream()
-                .map(o -> getUser(o))
-                .collect(Collectors.toList());
+        return userStorage.getFriends(id);
     }
 
     public List<User> getCommonFriends(Long id, Long otherId) {
-        User user = getUser(id);
-        User friend = getUser(otherId);
-        List<Long> commonFriends = new ArrayList<>(user.getFriends());
-        commonFriends.retainAll(friend.getFriends());
-        return commonFriends
-                .stream()
-                .map(o -> getUser(o))
-                .collect(Collectors.toList());
+        return userStorage.getCommonFriends(id, otherId);
     }
 }

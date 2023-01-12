@@ -10,19 +10,21 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
 
-    private final HashMap<Long, User> users = new HashMap<>();
+    private final HashMap<Long, User> users;
     private Long id= 0L;
+
+    public InMemoryUserStorage() {
+        users = new HashMap<>();
+    }
 
     @Override
     public User createUser(User user) {
-        if (StringUtils.isBlank(user.getName())) {
-            user.setName(user.getLogin());
-        }
         user.setId(++id);
         users.put(user.getId(), user);
         log.info("Create user: " + user.getName());
@@ -55,6 +57,44 @@ public class InMemoryUserStorage implements UserStorage {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user id " + id + " not found!");
         }
+    }
+
+    @Override
+    public void addFriend(Long id, Long friendId) {
+        User user = getUser(id);
+        User friend = getUser(friendId);
+        //обоюдное добавление в друзья
+        user.getFriends().add(friendId);
+        friend.getFriends().add(id);
+    }
+
+    @Override
+    public void deleteFriend(Long id, Long friendId) {
+        User user = getUser(id);
+        User friend = getUser(friendId);
+        //обоюдное удаление из друзей
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(id);
+    }
+
+    @Override
+    public List<User> getFriends(Long id) {
+        return getUser(id).getFriends()
+                .stream()
+                .map(o -> getUser(o))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getCommonFriends(Long id, Long otherId) {
+        User user = getUser(id);
+        User friend = getUser(otherId);
+        List<Long> commonFriends = new ArrayList<>(user.getFriends());
+        commonFriends.retainAll(friend.getFriends());
+        return commonFriends
+                .stream()
+                .map(o -> getUser(o))
+                .collect(Collectors.toList());
     }
 
 }
